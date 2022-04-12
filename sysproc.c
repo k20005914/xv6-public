@@ -89,3 +89,50 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// error checks arguments obtained for mprotect()
+int
+sys_mprotect(void)
+{
+
+	void *addr;
+	int len;
+
+	//error checks address
+	if(argptr(0, (void *) &addr, sizeof(void *)) < 0){
+		return -1;
+	}
+	//error checks length
+	if(argint(1, &len) <= 0){
+		return -1;
+	}
+	//error checks page allignment
+	if((int) addr % PGSIZE != 0){
+		return -1;
+	}
+	
+	return mprotect(addr, len);
+}
+
+// error checks arguments obtained for munprotect()
+int
+sys_munprotect(void)
+{
+	void *addr;
+	int len;
+
+	//error checks address
+	if(argptr(0, (void *) &addr, sizeof(void *)) < 0){
+		return -1;
+	}
+	//error checks length
+	if(argint(1, &len) <= 0){
+		return -1;
+	}
+	//error checks page allignment
+	if((int) addr % PGSIZE != 0){
+		return -1;
+	}
+	
+	return munprotect(addr, len);	
+}
